@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Tilt from 'react-parallax-tilt';
 import { projectsData } from '../data/projectsData';
 
 export default function AllProjects() {
@@ -27,7 +28,8 @@ export default function AllProjects() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {archive.map((project, idx) => (
-            <div key={idx} className="glass-card p-8 rounded-2xl border border-outline-variant/10 hover:border-secondary/30 hover:-translate-y-2 transition-all duration-300 group flex flex-col h-full">
+            <Tilt key={idx} glareEnable={true} glareMaxOpacity={0.15} glareColor="#ba9eff" scale={1.02} transitionSpeed={400} className="h-full">
+              <div className="glass-card p-8 rounded-2xl border border-outline-variant/10 hover:border-secondary/30 transition-all duration-300 group flex flex-col h-full bg-surface-container-lowest/80 backdrop-blur-xl hover:shadow-[0_0_40px_rgba(83,221,252,0.1)]">
               <span className="text-[10px] md:text-xs font-label uppercase tracking-widest text-primary mb-4">{project.type}</span>
               <h3 className="text-2xl font-bold font-headline text-on-surface mb-6 group-hover:text-secondary transition-colors">{project.title}</h3>
               
@@ -46,6 +48,7 @@ export default function AllProjects() {
                 </a>
               </div>
             </div>
+            </Tilt>
           ))}
         </div>
       </div>

@@ -6,29 +6,64 @@ export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const foundProject = projectsData.find(p => p.id === id);
-    if (foundProject) {
-      setProject(foundProject);
-    } else {
-      // Redirect back if project ID doesn't exist
-      navigate('/projects');
-    }
+    setLoading(true);
+    
+    // Simulate real network fetch for Skeleton UI demonstration
+    const timer = setTimeout(() => {
+      const foundProject = projectsData.find(p => p.id === id);
+      if (foundProject) {
+        setProject(foundProject);
+      } else {
+        navigate('/projects');
+      }
+      setLoading(false);
+    }, 600);
+    
+    return () => clearTimeout(timer);
   }, [id, navigate]);
 
-  if (!project) return null; // Or a loading spinner
+  if (loading || !project) {
+     return (
+       <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-5xl mx-auto animate-pulse relative z-10">
+         <div className="w-32 h-10 bg-surface-container border border-outline-variant/10 rounded-full mb-12"></div>
+         <div className="w-3/4 md:w-1/2 h-14 bg-surface-container border border-outline-variant/10 rounded-xl mb-6"></div>
+         <div className="flex gap-4 mb-10">
+           <div className="w-24 h-6 bg-surface-container border border-outline-variant/10 rounded-full"></div>
+           <div className="w-32 h-6 bg-surface-container border border-outline-variant/10 rounded-full"></div>
+         </div>
+         <div className="w-full h-64 md:h-96 lg:h-[32rem] bg-surface-container border border-outline-variant/10 rounded-[2rem] mb-12"></div>
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="md:col-span-2 space-y-4">
+               <div className="w-full h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
+               <div className="w-5/6 h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
+               <div className="w-4/6 h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
+            </div>
+            <div className="md:col-span-1 h-64 bg-surface-container border border-outline-variant/10 rounded-3xl"></div>
+         </div>
+       </main>
+     );
+  }
 
   return (
     <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-5xl mx-auto animate-fade-in relative z-10">
       
-      {/* Top Navigation */}
-      <div className="mb-12">
-        <Link to="/projects" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg text-sm">
+      {/* Top Navigation & Breadcrumbs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
+        <Link to="/projects" className="inline-flex items-center w-fit gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg text-sm">
           <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-          Back to Archive
+          Back
         </Link>
+        <nav className="flex items-center gap-2 text-xs md:text-sm font-bold text-on-surface-variant bg-surface-container-low/50 backdrop-blur px-4 py-2 rounded-lg border border-outline-variant/10 overflow-x-auto whitespace-nowrap">
+          <Link to="/" className="hover:text-primary transition-colors">Portfolio</Link>
+          <span className="material-symbols-outlined text-[14px] opacity-50">chevron_right</span>
+          <Link to="/projects" className="hover:text-primary transition-colors">Projects</Link>
+          <span className="material-symbols-outlined text-[14px] opacity-50">chevron_right</span>
+          <span className="text-secondary truncate">{project.title}</span>
+        </nav>
       </div>
 
       {/* Header Section */}
