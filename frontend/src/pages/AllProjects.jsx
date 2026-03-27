@@ -1,14 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Tilt from 'react-parallax-tilt';
-import { projectsData } from '../data/projectsData';
 
 export default function AllProjects() {
+  const [archive, setArchive] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    const fetchProjects = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${API_URL}/projects`);
+        if (!response.ok) throw new Error('Failed to fetch from Database');
+        const data = await response.json();
+        setArchive(data);
+      } catch (error) {
+        console.error('Failed to fetch projects from backend:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
   }, []);
-
-  const archive = projectsData;
 
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto animate-fade-in relative">
@@ -27,8 +41,10 @@ export default function AllProjects() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {archive.map((project, idx) => (
-            <Tilt key={idx} glareEnable={true} glareMaxOpacity={0.15} glareColor="#ba9eff" scale={1.02} transitionSpeed={400} className="h-full">
+          {loading ? (
+            <div className="col-span-full w-full h-96 flex items-center justify-center text-primary font-bold animate-pulse">Loading Projects from Database...</div>
+          ) : archive.map((project, idx) => (
+            <Tilt key={project._id || idx} glareEnable={true} glareMaxOpacity={0.15} glareColor="#ba9eff" scale={1.02} transitionSpeed={400} className="h-full">
               <div className="glass-card p-8 rounded-2xl border border-outline-variant/10 hover:border-secondary/30 transition-all duration-300 group flex flex-col h-full bg-surface-container-lowest/80 backdrop-blur-xl hover:shadow-[0_0_40px_rgba(83,221,252,0.1)]">
               <span className="text-[10px] md:text-xs font-label uppercase tracking-widest text-primary mb-4">{project.type}</span>
               <h3 className="text-2xl font-bold font-headline text-on-surface mb-6 group-hover:text-secondary transition-colors">{project.title}</h3>
@@ -40,7 +56,7 @@ export default function AllProjects() {
               </div>
 
               <div className="mt-auto pt-6 border-t border-outline-variant/10 flex justify-between items-center">
-                <Link to={`/projects/${project.id}`} className="flex items-center gap-1.5 text-sm font-bold bg-primary text-on-primary px-4 py-2 rounded-lg hover:scale-105 transition-transform shadow-lg">
+                <Link to={`/projects/${project._id}`} className="flex items-center gap-1.5 text-sm font-bold bg-primary text-on-primary px-4 py-2 rounded-lg hover:scale-105 transition-transform shadow-lg">
                   Read More <span className="material-symbols-outlined text-[16px]">menu_book</span>
                 </Link>
                 <a href={project.github} className="text-sm font-bold text-on-surface hover:text-primary transition-colors flex items-center gap-1.5" title="Source Code">

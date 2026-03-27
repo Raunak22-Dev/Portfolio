@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { projectsData } from '../data/projectsData';
 
 export default function ProjectDetails() {
   const { id } = useParams();
@@ -12,18 +11,22 @@ export default function ProjectDetails() {
     window.scrollTo(0, 0);
     setLoading(true);
     
-    // Simulate real network fetch for Skeleton UI demonstration
-    const timer = setTimeout(() => {
-      const foundProject = projectsData.find(p => p.id === id);
-      if (foundProject) {
-        setProject(foundProject);
-      } else {
-        navigate('/projects');
+    const fetchProjectDetails = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${API_URL}/projects/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch case study');
+        const data = await response.json();
+         setProject(data);
+      } catch (error) {
+         console.error('Error fetching project:', error);
+         navigate('/projects');
+      } finally {
+         setLoading(false);
       }
-      setLoading(false);
-    }, 600);
-    
-    return () => clearTimeout(timer);
+    };
+
+    fetchProjectDetails();
   }, [id, navigate]);
 
   if (loading || !project) {

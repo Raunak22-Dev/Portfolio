@@ -1,6 +1,10 @@
-export const projectsData = [
+require('dotenv').config();
+const mongoose = require('mongoose');
+const Project = require('../models/Project');
+
+// The exact data structure previously hardcoded in the frontend
+const projectsData = [
   { 
-    id: "1",
     title: "Task Management Platform", 
     type: "Full-Stack App", 
     tech: ["React", "Node.js", "MongoDB", "Redux", "Tailwind"], 
@@ -17,7 +21,6 @@ export const projectsData = [
     ]
   },
   { 
-    id: "2",
     title: "Predictive Weather Model", 
     type: "Machine Learning", 
     tech: ["Python", "TensorFlow", "Pandas", "NumPy"], 
@@ -34,7 +37,6 @@ export const projectsData = [
     ]
   },
   { 
-    id: "3",
     title: "Weather Dashboard", 
     type: "API Integration", 
     tech: ["JavaScript", "OpenWeather API", "Chart.js"], 
@@ -50,7 +52,6 @@ export const projectsData = [
     ]
   },
   { 
-    id: "4",
     title: "Analytics Tracker", 
     type: "Data Visualization", 
     tech: ["Vue.js", "D3.js", "Firebase"], 
@@ -66,7 +67,6 @@ export const projectsData = [
     ]
   },
   { 
-    id: "5",
     title: "Crypto Portfolio App", 
     type: "Web3/Blockchain", 
     tech: ["React", "Ethers.js", "Solidity", "Hardhat"], 
@@ -82,7 +82,6 @@ export const projectsData = [
     ]
   },
   { 
-    id: "6",
     title: "E-Commerce Storefront", 
     type: "Full-Stack App", 
     tech: ["Next.js", "Stripe", "Prisma", "PostgreSQL"], 
@@ -99,3 +98,22 @@ export const projectsData = [
     ]
   }
 ];
+
+// Execute Seeding
+mongoose.connect(process.env.MONGO_URI)
+  .then(async () => {
+    console.log('Successfully connected to MongoDB Atlas. Seeding Database...');
+    
+    // Clear the collection to prevent duplicates during testing
+    await Project.deleteMany({});
+    
+    // Insert all documents
+    await Project.insertMany(projectsData);
+    
+    console.log('Migration Complete! All 6 core projects are now safely inside MongoDB.');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('Seeding failed! Please check your MongoDB URI.', error.message);
+    process.exit(1);
+  });

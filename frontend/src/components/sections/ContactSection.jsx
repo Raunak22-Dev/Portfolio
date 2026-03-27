@@ -1,4 +1,35 @@
+import { useState } from 'react';
+
 export default function ContactSection() {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+    try {
+      const response = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      if (!response.ok) throw new Error('Submission failed');
+      
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setStatus('idle'), 5000);
+    } catch (error) {
+      console.error('Contact error:', error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
+  };
   return (
     <section id="contact" className="py-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10">
       {/* Background Orbs */}
@@ -53,31 +84,34 @@ export default function ContactSection() {
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-background via-primary to-background opacity-50"></div>
             
             <h3 className="text-2xl font-bold font-headline text-on-surface mb-8">Send an Inquiry</h3>
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative group">
-                  <input type="text" id="name" placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner" />
+                  <input type="text" id="name" value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})} placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner" />
                   <label htmlFor="name" className="absolute text-on-surface-variant text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-low px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-4 font-bold rounded">Your Name</label>
                 </div>
                 <div className="relative group">
-                  <input type="email" id="email" placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-secondary/60 focus:ring-1 focus:ring-secondary/60 transition-all font-body shadow-inner" />
+                  <input type="email" id="email" value={formData.email} onChange={(e)=>setFormData({...formData, email: e.target.value})} placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-secondary/60 focus:ring-1 focus:ring-secondary/60 transition-all font-body shadow-inner" />
                   <label htmlFor="email" className="absolute text-on-surface-variant text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-low px-2 peer-focus:px-2 peer-focus:text-secondary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-4 font-bold rounded">Your Email</label>
                 </div>
               </div>
               
               <div className="relative group">
-                <input type="text" id="subject" placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner" />
+                <input type="text" id="subject" value={formData.subject} onChange={(e)=>setFormData({...formData, subject: e.target.value})} placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner" />
                 <label htmlFor="subject" className="absolute text-on-surface-variant text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-low px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-4 font-bold rounded">Project Subject</label>
               </div>
 
               <div className="relative group">
-                <textarea id="message" rows="5" placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner resize-none"></textarea>
+                <textarea id="message" value={formData.message} onChange={(e)=>setFormData({...formData, message: e.target.value})} rows="5" placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner resize-none"></textarea>
                 <label htmlFor="message" className="absolute text-on-surface-variant text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-low px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-placeholder-shown:top-2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-4 font-bold rounded">Message Details</label>
               </div>
 
-              <button type="submit" className="w-full bg-gradient-to-r from-primary via-[#ba9eff] to-secondary text-[#091328] font-black tracking-widest uppercase py-4 rounded-xl hover:shadow-[0_0_30px_rgba(186,158,255,0.4)] hover:-translate-y-1 transition-all duration-300 flex justify-center items-center gap-2">
-                Launch Mission <span className="material-symbols-outlined text-lg">send</span>
+              <button type="submit" disabled={status === 'loading'} className="w-full bg-gradient-to-r from-primary via-[#ba9eff] to-secondary text-[#091328] font-black tracking-widest uppercase py-4 rounded-xl hover:shadow-[0_0_30px_rgba(186,158,255,0.4)] hover:-translate-y-1 transition-all duration-300 flex justify-center items-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0 disabled:cursor-not-allowed">
+                {status === 'loading' ? 'Transmitting...' : status === 'success' ? 'Mission Accomplished!' : 'Launch Mission'} 
+                {status !== 'loading' && <span className="material-symbols-outlined text-lg">{status === 'success' ? 'task_alt' : 'send'}</span>}
               </button>
+              
+              {status === 'error' && <p className="text-red-400 text-sm font-bold text-center animate-pulse mt-4">Failed to establish connection. Please try again later.</p>}
             </form>
           </div>
         </div>

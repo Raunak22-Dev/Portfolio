@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="pt-24 pb-8 px-6 md:px-12 max-w-7xl mx-auto relative overflow-hidden flex flex-col items-center">
@@ -30,7 +32,10 @@ export default function Footer() {
       </div>
 
       <div className="w-full flex flex-col md:flex-row justify-between items-center pt-8 text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-widest gap-4 relative z-10 text-center md:text-left">
-        <p>© {new Date().getFullYear()} Premium Portfolio Architecture.</p>
+        <p>
+          © {new Date().getFullYear()} Premium Portfolio Architecture
+          <Link to="/admin" title="Admin Login Vault" className="cursor-default hover:text-primary transition-colors px-1" style={{ outline: 'none' }}>.</Link>
+        </p>
         
         <div className="flex items-center gap-6">
           <a href="#about" className="hover:text-primary transition-colors">Platform</a>

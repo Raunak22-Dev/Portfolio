@@ -1,0 +1,31 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Optional REPL history
+.node_repl_history
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# CRITICAL SECURITY - NEVER PUSH THESE MULTIPLE-AUTHORIZATION THREADS
+.env
+.env.*
+!.env.example
+secrets.json
+*.pem
