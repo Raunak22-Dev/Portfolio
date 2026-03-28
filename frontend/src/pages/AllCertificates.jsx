@@ -1,40 +1,80 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+// Skeleton card for loading state
+function CertSkeleton() {
+  return (
+    <div className="glass-card rounded-3xl p-1 overflow-hidden relative animate-pulse">
+      <div className="bg-surface-container-lowest/80 backdrop-blur-xl w-full h-full rounded-[1.35rem] p-6 lg:p-8 flex flex-col border border-outline-variant/10">
+        <div className="flex justify-between items-start mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-surface-container-high" />
+          <div className="w-28 h-6 rounded-full bg-surface-container-high" />
+        </div>
+        <div className="w-3/4 h-6 bg-surface-container-high rounded-lg mb-3" />
+        <div className="w-1/2 h-4 bg-surface-container-high/60 rounded mb-4" />
+        <div className="mt-auto pt-6 border-t border-outline-variant/10 flex justify-between items-center">
+          <div className="w-24 h-4 bg-surface-container-high/60 rounded" />
+          <div className="w-14 h-4 bg-surface-container-high rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const STATIC_CERTS = [
+  { title: "AWS Certified Developer – Associate", issuer: "Amazon Web Services", date: "Valid through 2026", category: "Cloud Infrastructure", icon: "cloud", color: "from-[#FF9900]/20 to-[#FF9900]/5", textColor: "text-[#FF9900]", link: "#" },
+  { title: "Meta Front-End Professional Certificate", issuer: "Meta Platforms", date: "Issued Dec 2023", category: "Frontend Engineering", icon: "integration_instructions", color: "from-[#0668E1]/20 to-[#0668E1]/5", textColor: "text-[#0668E1]", link: "#" },
+  { title: "Google Data Analytics Professional", issuer: "Google", date: "Issued Aug 2022", category: "Data Science", icon: "query_stats", color: "from-[#34A853]/20 to-[#34A853]/5", textColor: "text-[#34A853]", link: "#" },
+  { title: "Certified Kubernetes Administrator (CKA)", issuer: "Cloud Native Computing Foundation", date: "Issued Jan 2024", category: "DevOps", icon: "deployed_code", color: "from-[#326CE5]/20 to-[#326CE5]/5", textColor: "text-[#326CE5]", link: "#" },
+  { title: "IBM Data Science Professional Certificate", issuer: "IBM", date: "Issued Feb 2022", category: "Data Science", icon: "analytics", color: "from-[#0530AD]/20 to-[#0530AD]/5", textColor: "text-[#0530AD]", link: "#" },
+  { title: "Cisco Certified Network Associate", issuer: "Cisco Systems", date: "Issued Nov 2021", category: "Networking", icon: "router", color: "from-[#049FD9]/20 to-[#049FD9]/5", textColor: "text-[#049FD9]", link: "#" }
+];
+
 export default function AllCertificates() {
+  const [certs, setCerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    const fetchCertifications = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${API_URL}/certifications`);
+        if (!response.ok) throw new Error('Fetch failed');
+        const data = await response.json();
+        // If DB has certs, use them; otherwise fall back to static data
+        setCerts(data.length > 0 ? data : STATIC_CERTS);
+      } catch (error) {
+        console.error('Failed to fetch certifications:', error);
+        setCerts(STATIC_CERTS); // Fallback to static data on error
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCertifications();
   }, []);
 
-  const certs = [
-    { title: "AWS Certified Developer – Associate", issuer: "Amazon Web Services", date: "Valid through 2026", category: "Cloud Infrastructure", icon: "cloud", color: "from-[#FF9900]/20 to-[#FF9900]/5", textColor: "text-[#FF9900]" },
-    { title: "Meta Front-End Professional Certificate", issuer: "Meta Platforms", date: "Issued Dec 2023", category: "Frontend Engineering", icon: "integration_instructions", color: "from-[#0668E1]/20 to-[#0668E1]/5", textColor: "text-[#0668E1]" },
-    { title: "Google Data Analytics Professional", issuer: "Google", date: "Issued Aug 2022", category: "Data Science", icon: "query_stats", color: "from-[#34A853]/20 to-[#34A853]/5", textColor: "text-[#34A853]" },
-    { title: "Certified Kubernetes Administrator (CKA)", issuer: "Cloud Native Computing Foundation", date: "Issued Jan 2024", category: "DevOps", icon: "deployed_code", color: "from-[#326CE5]/20 to-[#326CE5]/5", textColor: "text-[#326CE5]" },
-    { title: "IBM Data Science Professional Certificate", issuer: "IBM", date: "Issued Feb 2022", category: "Data Science", icon: "analytics", color: "from-[#0530AD]/20 to-[#0530AD]/5", textColor: "text-[#0530AD]" },
-    { title: "Cisco Certified Network Associate", issuer: "Cisco Systems", date: "Issued Nov 2021", category: "Networking", icon: "router", color: "from-[#049FD9]/20 to-[#049FD9]/5", textColor: "text-[#049FD9]" }
-  ];
-
   return (
-    <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-7xl mx-auto animate-fade-in relative z-10">
-      
-      <div className="mb-16 md:mb-24 text-center md:text-left">
+    <main className="min-h-screen pt-20 pb-24 px-6 md:px-12 max-w-7xl mx-auto animate-fade-in relative z-10">
+      <div className="mb-16 md:mb-20 text-center md:text-left">
         <Link to="/" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 mb-8 bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg">
           <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           Back to Portfolio
         </Link>
-        <h1 className="font-headline text-5xl md:text-6xl font-black text-on-surface mb-6">Certifications Library</h1>
+        <h1 className="font-headline text-5xl md:text-7xl font-black text-on-surface mb-6">Certifications Library</h1>
         <p className="text-on-surface-variant text-lg md:text-xl max-w-2xl">A curated archive of verified industry credentials and specialized continuing education.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certs.map((cert, idx) => (
-          <div key={idx} className="glass-card rounded-3xl p-1 shadow-xl hover:-translate-y-2 transition-transform duration-500 overflow-hidden relative group">
+        {loading ? (
+          Array.from({ length: 6 }).map((_, i) => <CertSkeleton key={i} />)
+        ) : certs.map((cert, idx) => (
+          <div key={cert._id || idx} className="glass-card rounded-3xl p-1 shadow-xl hover:-translate-y-2 transition-transform duration-500 overflow-hidden relative group">
             <div className="bg-surface-container-lowest/80 backdrop-blur-xl w-full h-full rounded-[1.35rem] p-6 lg:p-8 flex flex-col relative z-10 border border-outline-variant/10">
               
               <div className="flex justify-between items-start mb-8">
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cert.color} flex items-center justify-center border border-white/5 shadow-inner group-hover:scale-110 transition-transform duration-500`}>
-                  <span className={`material-symbols-outlined ${cert.textColor} text-[28px]`}>{cert.icon}</span>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cert.color || 'from-primary/20 to-primary/5'} flex items-center justify-center border border-white/5 shadow-inner group-hover:scale-110 transition-transform duration-500`}>
+                  <span className={`material-symbols-outlined ${cert.textColor || 'text-primary'} text-[28px]`}>{cert.icon || 'workspace_premium'}</span>
                 </div>
                 <div className="bg-surface-container-high px-3 py-1 rounded-full border border-outline-variant/20">
                   <span className="text-[10px] font-label uppercase tracking-widest text-on-surface-variant font-bold">{cert.category}</span>
@@ -46,13 +86,13 @@ export default function AllCertificates() {
               
               <div className="mt-auto pt-6 border-t border-outline-variant/10 flex justify-between items-center">
                 <span className="text-xs font-label text-slate-500 uppercase tracking-widest">{cert.date}</span>
-                <a href="#" className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-secondary transition-colors" aria-label="Verify credential">
+                <a href={cert.link || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-secondary transition-colors" aria-label="Verify credential">
                   Verify <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </a>
               </div>
             </div>
 
-            <div className={`absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-br ${cert.color} blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-full`}></div>
+            <div className={`absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-br ${cert.color || 'from-primary/20 to-primary/5'} blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-full`}></div>
           </div>
         ))}
       </div>

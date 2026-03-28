@@ -19,4 +19,24 @@ const createCertification = async (req, res) => {
   }
 };
 
-module.exports = { getCertifications, createCertification };
+const updateCertification = async (req, res) => {
+  try {
+    const updated = await Certification.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ message: 'Certification not found' });
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ message: 'Update failed', error: error.message });
+  }
+};
+
+const deleteCertification = async (req, res) => {
+  try {
+    const cert = await Certification.findByIdAndDelete(req.params.id);
+    if (!cert) return res.status(404).json({ message: 'Certification not found' });
+    res.json({ message: 'Certification deleted.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Delete failed', error: error.message });
+  }
+};
+
+module.exports = { getCertifications, createCertification, updateCertification, deleteCertification };

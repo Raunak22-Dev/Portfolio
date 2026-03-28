@@ -53,18 +53,18 @@ export default function ContactSection() {
           </p>
 
           <div className="space-y-4">
-            <a href="mailto:hello@student.edu" className="group flex items-center p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-[0_0_30px_rgba(186,158,255,0.1)] transition-all overflow-hidden relative">
+            <a href="mailto:raunakgangwal22@gmail.com" className="group flex items-center p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-[0_0_30px_rgba(186,158,255,0.1)] transition-all overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></div>
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 mr-4 relative z-10 group-hover:scale-110 transition-transform">
                 <span className="material-symbols-outlined text-primary">mail</span>
               </div>
               <div className="relative z-10">
                 <p className="text-[10px] font-label uppercase tracking-widest text-on-surface-variant font-bold mb-1">Email Me Directly</p>
-                <p className="text-base font-bold text-on-surface group-hover:text-primary transition-colors">hello@student.edu</p>
+                <p className="text-base font-bold text-on-surface group-hover:text-primary transition-colors">raunakgangwal22@gmail.com</p>
               </div>
             </a>
 
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="group flex items-center p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 hover:border-[#0A66C2]/40 hover:shadow-[0_0_30px_rgba(10,102,194,0.1)] transition-all overflow-hidden relative">
+            <a href="https://www.linkedin.com/in/raunakgangwal/" target="_blank" rel="noopener noreferrer" className="group flex items-center p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 hover:border-[#0A66C2]/40 hover:shadow-[0_0_30px_rgba(10,102,194,0.1)] transition-all overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-r from-[#0A66C2]/5 to-transparent translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></div>
               <div className="w-12 h-12 bg-[#0A66C2]/10 rounded-xl flex items-center justify-center border border-[#0A66C2]/20 mr-4 relative z-10 group-hover:scale-110 transition-transform">
                 <svg className="w-6 h-6 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>

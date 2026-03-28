@@ -12,9 +12,7 @@ const getProjects = async (req, res) => {
 const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
+    if (!project) return res.status(404).json({ message: 'Project not found' });
     res.json(project);
   } catch (error) {
     res.status(500).json({ message: 'Server Error: Invalid ID or fetch failed', error: error.message });
@@ -31,21 +29,24 @@ const createProject = async (req, res) => {
   }
 };
 
+const updateProject = async (req, res) => {
+  try {
+    const updated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ message: 'Project not found' });
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ message: 'Update failed', error: error.message });
+  }
+};
+
 const deleteProject = async (req, res) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
+    if (!project) return res.status(404).json({ message: 'Project not found' });
     res.json({ message: 'Project successfully deleted from database.' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error: Unable to delete project', error: error.message });
   }
 };
 
-module.exports = {
-  getProjects,
-  getProjectById,
-  createProject,
-  deleteProject
-};
+module.exports = { getProjects, getProjectById, createProject, updateProject, deleteProject };

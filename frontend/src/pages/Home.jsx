@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar';
+
 import Hero from '../components/sections/Hero';
 import About from '../components/sections/About';
 import Skills from '../components/sections/Skills';
@@ -11,7 +11,7 @@ import ContactSection from '../components/sections/ContactSection';
 export default function Home() {
   return (
     <main>
-      <Navbar />
+
       <Hero />
       <About />
       <Education />

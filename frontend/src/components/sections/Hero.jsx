@@ -44,7 +44,7 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-5 pt-4 justify-center lg:justify-start">
-            <MagneticButton href="#projects" className="px-8 py-4 bg-gradient-to-br from-primary to-primary-dim rounded-lg font-bold text-on-primary shadow-lg shadow-primary/20 flex items-center justify-center">
+            <MagneticButton href="/#projects" className="px-8 py-4 bg-gradient-to-br from-primary to-primary-dim rounded-lg font-bold text-on-primary shadow-lg shadow-primary/20 flex items-center justify-center">
               View Projects
             </MagneticButton>
             <MagneticButton to="/resume" className="px-8 py-4 border border-outline-variant/30 rounded-lg font-bold text-on-surface hover:border-outline-variant/60 flex items-center justify-center group">
