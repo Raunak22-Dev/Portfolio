@@ -57,7 +57,7 @@ export default function AllCertificates() {
   return (
     <main className="min-h-screen pt-20 pb-24 px-6 md:px-12 max-w-7xl mx-auto animate-fade-in relative z-10">
       <div className="mb-16 md:mb-20 text-center md:text-left">
-        <Link to="/" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 mb-8 bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg">
+        <Link to="/" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 mb-8 transform-gpu bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg">
           <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           Back to Portfolio
         </Link>
@@ -69,11 +69,11 @@ export default function AllCertificates() {
         {loading ? (
           Array.from({ length: 6 }).map((_, i) => <CertSkeleton key={i} />)
         ) : certs.map((cert, idx) => (
-          <div key={cert._id || idx} className="glass-card rounded-3xl p-1 shadow-xl hover:-translate-y-2 transition-transform duration-500 overflow-hidden relative group">
+          <div key={cert._id || idx} className="glass-card rounded-3xl p-1 shadow-xl hover:-translate-y-2 transition-transform duration-500 transform-gpu overflow-hidden relative group">
             <div className="bg-surface-container-lowest/80 backdrop-blur-xl w-full h-full rounded-[1.35rem] p-6 lg:p-8 flex flex-col relative z-10 border border-outline-variant/10">
               
               <div className="flex justify-between items-start mb-8">
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cert.color || 'from-primary/20 to-primary/5'} flex items-center justify-center border border-white/5 shadow-inner group-hover:scale-110 transition-transform duration-500`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cert.color || 'from-primary/20 to-primary/5'} flex items-center justify-center border border-white/5 shadow-inner group-hover:scale-110 transition-transform duration-500 transform-gpu`}>
                   <span className={`material-symbols-outlined ${cert.textColor || 'text-primary'} text-[28px]`}>{cert.icon || 'workspace_premium'}</span>
                 </div>
                 <div className="bg-surface-container-high px-3 py-1 rounded-full border border-outline-variant/20">
@@ -91,8 +91,8 @@ export default function AllCertificates() {
                 </a>
               </div>
             </div>
-
-            <div className={`absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-br ${cert.color || 'from-primary/20 to-primary/5'} blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-full`}></div>
+            {/* Ambient background glow mapped inside each card */}
+            <div className={`absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-br ${cert.color || 'from-primary/20 to-primary/5'} blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-full transform-gpu`}></div>
           </div>
         ))}
       </div>

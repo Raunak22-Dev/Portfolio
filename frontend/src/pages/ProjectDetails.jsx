@@ -10,19 +10,19 @@ export default function ProjectDetails() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    
+
     const fetchProjectDetails = async () => {
       try {
         const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
         const response = await fetch(`${API_URL}/projects/${id}`);
         if (!response.ok) throw new Error('Failed to fetch case study');
         const data = await response.json();
-         setProject(data);
+        setProject(data);
       } catch (error) {
-         console.error('Error fetching project:', error);
-         navigate('/projects');
+        console.error('Error fetching project:', error);
+        navigate('/projects');
       } finally {
-         setLoading(false);
+        setLoading(false);
       }
     };
 
@@ -30,25 +30,25 @@ export default function ProjectDetails() {
   }, [id, navigate]);
 
   if (loading || !project) {
-     return (
-       <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-5xl mx-auto animate-pulse relative z-10">
-         <div className="w-32 h-10 bg-surface-container border border-outline-variant/10 rounded-full mb-12"></div>
-         <div className="w-3/4 md:w-1/2 h-14 bg-surface-container border border-outline-variant/10 rounded-xl mb-6"></div>
-         <div className="flex gap-4 mb-10">
-           <div className="w-24 h-6 bg-surface-container border border-outline-variant/10 rounded-full"></div>
-           <div className="w-32 h-6 bg-surface-container border border-outline-variant/10 rounded-full"></div>
-         </div>
-         <div className="w-full h-64 md:h-96 lg:h-[32rem] bg-surface-container border border-outline-variant/10 rounded-[2rem] mb-12"></div>
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="md:col-span-2 space-y-4">
-               <div className="w-full h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
-               <div className="w-5/6 h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
-               <div className="w-4/6 h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
-            </div>
-            <div className="md:col-span-1 h-64 bg-surface-container border border-outline-variant/10 rounded-3xl"></div>
-         </div>
-       </main>
-     );
+    return (
+      <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-5xl mx-auto animate-pulse relative z-10">
+        <div className="w-32 h-10 bg-surface-container border border-outline-variant/10 rounded-full mb-12"></div>
+        <div className="w-3/4 md:w-1/2 h-14 bg-surface-container border border-outline-variant/10 rounded-xl mb-6"></div>
+        <div className="flex gap-4 mb-10">
+          <div className="w-24 h-6 bg-surface-container border border-outline-variant/10 rounded-full"></div>
+          <div className="w-32 h-6 bg-surface-container border border-outline-variant/10 rounded-full"></div>
+        </div>
+        <div className="w-full h-64 md:h-96 lg:h-[32rem] bg-surface-container border border-outline-variant/10 rounded-[2rem] mb-12"></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="md:col-span-2 space-y-4">
+            <div className="w-full h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
+            <div className="w-5/6 h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
+            <div className="w-4/6 h-4 bg-surface-container border border-outline-variant/10 rounded"></div>
+          </div>
+          <div className="md:col-span-1 h-64 bg-surface-container border border-outline-variant/10 rounded-3xl"></div>
+        </div>
+      </main>
+    );
   }
 
   const techStack = Array.isArray(project.tech) ? project.tech : [];
@@ -56,10 +56,10 @@ export default function ProjectDetails() {
 
   return (
     <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-5xl mx-auto animate-fade-in relative z-10">
-      
+
       {/* Top Navigation & Breadcrumbs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
-        <Link to="/projects" className="inline-flex items-center w-fit gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg text-sm">
+        <Link to="/projects" className="inline-flex items-center w-fit gap-2 text-primary font-bold hover:text-primary-dim transition-all duration-300 transform-gpu bg-surface-container-high/60 backdrop-blur px-5 py-2.5 rounded-full border border-primary/20 hover:border-primary/50 hover:-translate-x-1 shadow-lg text-sm">
           <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           Back
         </Link>
@@ -76,7 +76,7 @@ export default function ProjectDetails() {
       <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-black text-on-surface mb-4 leading-tight">
         {project.title}
       </h1>
-      
+
       <div className="flex flex-wrap items-center gap-4 mb-10">
         <span className="bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
           {project.type}
@@ -93,15 +93,15 @@ export default function ProjectDetails() {
       {/* Media Hero Section */}
       <div className="w-full h-64 md:h-96 lg:h-[32rem] rounded-[2rem] overflow-hidden mb-12 border border-outline-variant/20 shadow-2xl relative group">
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 opacity-60"></div>
-        <img 
-          src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'} 
+        <img
+          src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'}
           onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }}
-          alt={project.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
+          alt={project.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out transform-gpu will-change-transform"
         />
         <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-20 flex gap-4">
           {project.link && (
-            <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-full font-bold hover:scale-105 shadow-lg transition-transform">
+            <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-full font-bold hover:scale-105 shadow-lg transition-transform transform-gpu">
               Live Demo <span className="material-symbols-outlined text-[18px]">open_in_new</span>
             </a>
           )}
@@ -115,7 +115,7 @@ export default function ProjectDetails() {
 
       {/* Case Study Content layout */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-on-surface-variant">
-        
+
         {/* Main Context */}
         <div className="md:col-span-2 space-y-8 text-base md:text-lg leading-relaxed">
           {project.longDescription && (
