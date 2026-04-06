@@ -97,7 +97,7 @@ export default function ContactSection() {
               </div>
               
               <div className="relative group">
-                <input type="text" id="subject" value={formData.subject} onChange={(e)=>setFormData({...formData, subject: e.target.value})} placeholder=" " required className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner" />
+                <input type="text" id="subject" value={formData.subject} onChange={(e)=>setFormData({...formData, subject: e.target.value})} placeholder=" " className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body shadow-inner" />
                 <label htmlFor="subject" className="absolute text-on-surface-variant text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-low px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-4 font-bold rounded">Project Subject</label>
               </div>
 

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import profilePic from "../../../public/Crop version.jpeg";
 
 /* --- Magnetic Button --- */
 function MagneticButton({ children, className, href, to }) {
@@ -17,8 +18,52 @@ function MagneticButton({ children, className, href, to }) {
   return <a href={href} ref={ref} onMouseMove={handleMove} onMouseLeave={handleLeave} className={cls}>{children}</a>;
 }
 
+/* --- Typewriter Effect --- */
+function Typewriter({ words, typingSpeed = 100, deletingSpeed = 60, pauseTime = 2000 }) {
+  const [text, setText] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const tick = useCallback(() => {
+    const currentWord = words[wordIndex];
+
+    if (!isDeleting) {
+      // Typing
+      setText(currentWord.substring(0, text.length + 1));
+      if (text.length + 1 === currentWord.length) {
+        // Finished typing — pause, then start deleting
+        setTimeout(() => setIsDeleting(true), pauseTime);
+        return;
+      }
+    } else {
+      // Deleting
+      setText(currentWord.substring(0, text.length - 1));
+      if (text.length - 1 === 0) {
+        setIsDeleting(false);
+        setWordIndex((prev) => (prev + 1) % words.length);
+        return;
+      }
+    }
+  }, [text, wordIndex, isDeleting, words, pauseTime]);
+
+  useEffect(() => {
+    const speed = isDeleting ? deletingSpeed : typingSpeed;
+    const timer = setTimeout(tick, speed);
+    return () => clearTimeout(timer);
+  }, [tick, isDeleting, typingSpeed, deletingSpeed]);
+
+  return (
+    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary-dim">
+      {text}
+      <span className="inline-block w-[3px] h-[0.85em] bg-secondary ml-1 align-middle animate-[blink_1s_step-end_infinite]" />
+    </span>
+  );
+}
+
 /* --- Hero --- */
 export default function Hero() {
+  const roles = ['Data Analyst', 'Python Developer',];
+
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-28 pb-20 px-6">
       {/* Background */}
@@ -35,12 +80,14 @@ export default function Hero() {
             <span className="text-xs sm:text-sm font-label uppercase tracking-widest text-on-surface-variant font-bold">Actively Seeking Opportunities</span>
           </div>
 
-          <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] leading-[1.1] font-extrabold tracking-tighter text-on-surface">
-            Designing <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary-dim">Digital Frontiers</span>
+          <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] leading-[1.1] font-extrabold tracking-tighter text-on-surface">
+            Hi,<br />
+            I'm Raunak Gangwal<br />
+            <Typewriter words={roles} typingSpeed={100} deletingSpeed={60} pauseTime={2200} />
           </h1>
 
           <p className="text-base sm:text-lg text-on-surface-variant max-w-xl leading-relaxed mx-auto lg:mx-0">
-            A boutique engineering approach where high-end aesthetics meet surgical precision. I curate solutions that pulsate with energy and define modern web interaction.
+            I am a data analyst who is passionate about using data to solve real-world problems. I am a quick learner and a team player, and I am always looking for new challenges to take on.
           </p>
 
           <div className="flex flex-wrap gap-5 pt-4 justify-center lg:justify-start">
@@ -62,7 +109,7 @@ export default function Hero() {
             <img
               alt="Professional portrait"
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop"
+              src={profilePic}
             />
           </div>
         </div>

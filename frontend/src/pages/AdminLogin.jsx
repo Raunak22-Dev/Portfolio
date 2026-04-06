@@ -24,6 +24,11 @@ export default function AdminLogin() {
       if (response.ok) {
         // Cryptographic key acquired, stash in localStorage
         localStorage.setItem('master_admin_token', data.token);
+        
+        // Store explicit 24hr expiration timestamp
+        const expirationTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+        localStorage.setItem('master_admin_expires', expirationTime.toString());
+
         // Vault breached. Redirect to root dashboard matrix
         navigate('/admin/dashboard');
       } else {

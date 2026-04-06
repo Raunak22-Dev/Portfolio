@@ -22,7 +22,8 @@ export default function Projects() {
       try {
         // Step 1: get ordered featured IDs
         const idsRes = await fetch(`${API_URL}/settings/featured`);
-        const ids = idsRes.ok ? await idsRes.json() : [];
+        const rawIds = idsRes.ok ? await idsRes.json() : [];
+        const ids = Array.isArray(rawIds) ? rawIds : [];
 
         if (!ids || ids.length === 0) {
           // No featured set — fall back to latest 4 projects
@@ -34,9 +35,14 @@ export default function Projects() {
           const projRes = await fetch(`${API_URL}/projects`);
           const all = projRes.ok ? await projRes.json() : [];
           const ordered = ids
-            .map(id => all.find(p => p._id === id))
+            .map(id => all.find(p => String(p._id) === String(id)))
             .filter(Boolean);
-          setFeatured(ordered);
+          
+          if (ordered.length === 0 && all.length > 0) {
+            setFeatured(all.slice(0, 4));
+          } else {
+            setFeatured(ordered);
+          }
         }
       } catch (e) {
         console.error('Failed to load featured projects:', e);
@@ -85,6 +91,7 @@ export default function Projects() {
                   <img
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'}
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }}
                     alt={project.title}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-transparent flex flex-col justify-end p-6 md:p-8">

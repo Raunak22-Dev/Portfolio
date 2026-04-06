@@ -1,18 +1,40 @@
 export default function Education() {
   const education = [
     {
-      degree: "Bachelor of Science in Computer Science",
-      school: "University of Technology",
-      location: "San Francisco, CA",
-      date: "Aug 2020 - May 2024",
-      gpa: "3.8/4.0 GPA",
+      degree: "Bachelor of Engineering (B.E.) in Computer Engineering",
+      school: "SNJB's K.B. Jain College of Engineering",
+      location: "Chandwad, Maharashtra",
+      date: "2022 – 2026",
+      gpa: "",
       color: "from-secondary/30",
       description: [
-        "Specialized in Software Architecture, Distributed Systems, and Advanced Machine Learning algorithms.",
-        "Graduated Summa Cum Laude, consistently recognized on the Dean's List for exceptional academic performance.",
-        "Led the student engineering club to build scalable open-source tools for campus infrastructure."
+        "Pursuing a comprehensive curriculum in Computer Engineering with focus on software development, data structures, and modern web technologies."
       ],
-      tech: ["Data Structures", "Algorithms", "Operating Systems", "Databases", "AI Architecture"]
+      tech: ["Data Structures", "Algorithms", "Operating Systems", "Databases", "Machine Learning", "Web Development"]
+    },
+    {
+      degree: "Higher Secondary Education (12th)",
+      school: "Gokhale Education Society Arts Commerce & Science Junior College",
+      location: "Nashik Road, Nashik",
+      date: "2020 – 2022",
+      gpa: "53%",
+      color: "from-primary/30",
+      description: [
+        "Completed higher secondary education with a focus on Science stream.",
+      ],
+      tech: ["Physics", "Chemistry", "Mathematics"]
+    },
+    {
+      degree: "Secondary Education (10th)",
+      school: "R.A.A.R. English Medium School",
+      location: "Nashik Road, Nashik",
+      date: "2019 – 2020",
+      gpa: "72%",
+      color: "from-tertiary/30",
+      description: [
+        "Completed secondary education building a strong academic foundation.",
+      ],
+      tech: ["Science", "Mathematics", "English"]
     }
   ];
 
@@ -49,7 +71,7 @@ export default function Education() {
                   <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest bg-surface-variant/50 px-3 py-1 rounded w-fit">{edu.date}</span>
                   <div className="flex gap-2 items-center">
                     <span className="text-xs text-on-surface-variant/70 font-bold">{edu.location}</span>
-                    <span className="text-xs text-[#a3e635] font-black border-l border-outline-variant/30 pl-2">{edu.gpa}</span>
+                    {edu.gpa && <span className="text-xs text-[#a3e635] font-black border-l border-outline-variant/30 pl-2">{edu.gpa}</span>}
                   </div>
                 </div>
               </div>
@@ -71,7 +93,7 @@ export default function Education() {
                 ))}
               </div>
             </div>
-            
+
             {/* Ambient Line Glow attached to Node */}
             <div className="absolute -left-[41px] md:-left-[73px] top-8 w-[2px] h-full bg-gradient-to-b from-secondary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
           </div>

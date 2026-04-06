@@ -79,7 +79,7 @@ export default function AllProjects() {
               <h3 className="text-2xl font-bold font-headline text-on-surface mb-6 group-hover:text-secondary transition-colors">{project.title}</h3>
               
               <div className="flex flex-wrap gap-2 mb-8">
-                {project.tech.map((tool, i) => (
+                {(project.tech || []).map((tool, i) => (
                   <span key={i} className="px-3 py-1 bg-surface-container-high rounded text-xs font-medium text-on-surface-variant border border-outline-variant/10">{tool}</span>
                 ))}
               </div>

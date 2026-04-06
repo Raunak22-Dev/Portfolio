@@ -22,7 +22,7 @@ export default function Skills() {
       color: "text-tertiary",
       bgBorder: "hover:border-tertiary/40 hover:shadow-[0_0_30px_rgba(255,132,57,0.15)]",
       description: "Managing seamless data pipelines and automated global deployments.",
-      skills: ["PostgreSQL", "MongoDB", "Redis", "Docker", "AWS EBS", "CI/CD Actions"] 
+      skills: [, "MongoDB", "Redis", "Docker", "AWS EBS", "CI/CD Actions"] 
     },
     { 
       title: "Core Programming", 
@@ -30,7 +30,7 @@ export default function Skills() {
       color: "text-[#a3e635]",
       bgBorder: "hover:border-[#a3e635]/40 hover:shadow-[0_0_30px_rgba(163,230,53,0.15)]",
       description: "Applying strong foundational knowledge in data structures and OOP paradigms.",
-      skills: ["JavaScript", "C++", "Java", "Python Core", "System Design", "Agile SDLC"] 
+      skills: ["JavaScript","Python",] 
     }
   ];
 

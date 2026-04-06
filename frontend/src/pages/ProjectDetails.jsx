@@ -51,6 +51,9 @@ export default function ProjectDetails() {
      );
   }
 
+  const techStack = Array.isArray(project.tech) ? project.tech : [];
+  const features = Array.isArray(project.features) ? project.features : [];
+
   return (
     <main className="min-h-screen pt-24 pb-24 px-6 md:px-12 max-w-5xl mx-auto animate-fade-in relative z-10">
       
@@ -60,7 +63,7 @@ export default function ProjectDetails() {
           <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           Back
         </Link>
-        <nav className="flex items-center gap-2 text-xs md:text-sm font-bold text-on-surface-variant bg-surface-container-low/50 backdrop-blur px-4 py-2 rounded-lg border border-outline-variant/10 overflow-x-auto whitespace-nowrap">
+        <nav className="flex items-center gap-2 text-xs md:text-sm font-bold text-on-surface-variant bg-surface-container-low/50 backdrop-blur px-4 py-2 rounded-lg border border-outline-variant/10 overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-primary transition-colors">Portfolio</Link>
           <span className="material-symbols-outlined text-[14px] opacity-50">chevron_right</span>
           <Link to="/projects" className="hover:text-primary transition-colors">Projects</Link>
@@ -79,7 +82,7 @@ export default function ProjectDetails() {
           {project.type}
         </span>
         <div className="flex gap-2">
-          {project.tech.map((tool, i) => (
+          {techStack.map((tool, i) => (
             <span key={i} className="px-3 py-1 bg-surface-container-high rounded text-xs font-medium text-on-surface-variant border border-outline-variant/10">
               {tool}
             </span>
@@ -91,17 +94,22 @@ export default function ProjectDetails() {
       <div className="w-full h-64 md:h-96 lg:h-[32rem] rounded-[2rem] overflow-hidden mb-12 border border-outline-variant/20 shadow-2xl relative group">
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 opacity-60"></div>
         <img 
-          src={project.image} 
+          src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'} 
+          onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }}
           alt={project.title} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
         />
         <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-20 flex gap-4">
-          <a href={project.link} className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-full font-bold hover:scale-105 shadow-lg transition-transform">
-            Live Demo <span className="material-symbols-outlined text-[18px]">open_in_new</span>
-          </a>
-          <a href={project.github} className="flex items-center gap-2 bg-surface-container-high text-on-surface px-6 py-3 rounded-full font-bold hover:bg-surface-variant border border-outline-variant/20 shadow-lg transition-colors">
-            Source Code <span className="material-symbols-outlined text-[18px]">code</span>
-          </a>
+          {project.link && (
+            <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-full font-bold hover:scale-105 shadow-lg transition-transform">
+              Live Demo <span className="material-symbols-outlined text-[18px]">open_in_new</span>
+            </a>
+          )}
+          {project.github && (
+            <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-surface-container-high text-on-surface px-6 py-3 rounded-full font-bold hover:bg-surface-variant border border-outline-variant/20 shadow-lg transition-colors">
+              Source Code <span className="material-symbols-outlined text-[18px]">code</span>
+            </a>
+          )}
         </div>
       </div>
 
@@ -110,24 +118,28 @@ export default function ProjectDetails() {
         
         {/* Main Context */}
         <div className="md:col-span-2 space-y-8 text-base md:text-lg leading-relaxed">
-          <section>
-            <h2 className="text-2xl font-bold font-headline text-on-surface mb-4">Project Overview</h2>
-            <p className="text-on-surface-variant/80 font-medium">
-              {project.longDescription}
-            </p>
-          </section>
+          {project.longDescription && (
+            <section>
+              <h2 className="text-2xl font-bold font-headline text-on-surface mb-4">Project Overview</h2>
+              <p className="text-on-surface-variant/80 font-medium">
+                {project.longDescription}
+              </p>
+            </section>
+          )}
 
-          <section>
-            <h2 className="text-2xl font-bold font-headline text-on-surface mb-4">Key Features & Architecture</h2>
-            <ul className="space-y-4">
-              {project.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start">
-                  <span className="material-symbols-outlined text-secondary mr-3 mt-1 shrink-0">check_circle</span>
-                  <span className="font-medium text-on-surface-variant/80">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {features.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold font-headline text-on-surface mb-4">Key Features & Architecture</h2>
+              <ul className="space-y-4">
+                {features.map((feature, idx) => (
+                  <li key={idx} className="flex items-start">
+                    <span className="material-symbols-outlined text-secondary mr-3 mt-1 shrink-0">check_circle</span>
+                    <span className="font-medium text-on-surface-variant/80">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         {/* Sidebar Metadata */}
@@ -140,16 +152,18 @@ export default function ProjectDetails() {
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Timeline</h3>
             <p className="text-on-surface font-bold text-sm">3 Months</p>
           </div>
-          <div>
-            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Core Technologies</h3>
-            <div className="flex flex-wrap gap-2">
-              {project.tech.map((tool, i) => (
-                <span key={i} className="px-3 py-1 bg-background/60 border border-outline-variant/10 rounded-md text-xs font-bold text-slate-300">
-                  {tool}
-                </span>
-              ))}
+          {techStack.length > 0 && (
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Core Technologies</h3>
+              <div className="flex flex-wrap gap-2">
+                {techStack.map((tool, i) => (
+                  <span key={i} className="px-3 py-1 bg-background/60 border border-outline-variant/10 rounded-md text-xs font-bold text-slate-300">
+                    {tool}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
       </div>
