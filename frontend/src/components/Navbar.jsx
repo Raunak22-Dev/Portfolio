@@ -17,29 +17,38 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScrollState);
   }, []);
 
-  // Scroll spy for active section highlighting
+  // Scroll spy for active section highlighting with requestAnimationFrame throttling
   useEffect(() => {
     if (!isHomePage) return;
 
+    let ticking = false;
+    const sections = ['home', 'about', 'education', 'skills', 'projects', 'experience', 'certifications', 'contact'];
+
     const handleScroll = () => {
-      const sections = ['home', 'about', 'education', 'skills', 'projects', 'experience', 'certifications', 'contact'];
-      const scrollPos = window.scrollY + 120;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollPos = window.scrollY + 120;
 
-      if (window.scrollY < 50) {
-        setActiveSection('home');
-        return;
-      }
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const element = document.getElementById(sections[i]);
-        if (element && element.offsetTop <= scrollPos) {
-          setActiveSection(sections[i]);
-          return;
-        }
+          if (window.scrollY < 50) {
+            setActiveSection('home');
+          } else {
+            for (let i = sections.length - 1; i >= 0; i--) {
+              const element = document.getElementById(sections[i]);
+              if (element && element.offsetTop <= scrollPos) {
+                setActiveSection(sections[i]);
+                break;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
+    // Initialize state on load
     handleScroll();
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHomePage]);
@@ -94,11 +103,10 @@ export default function Navbar() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-2' : 'py-4 md:py-6'}`}>
       <nav
-        className={`flex justify-between items-center px-6 md:px-8 py-3 mx-4 md:mx-auto max-w-6xl rounded-full transition-all duration-300 border ${
-          scrolled
-            ? 'bg-[#091328]/80 backdrop-blur-xl shadow-2xl border-outline-variant/20'
-            : 'bg-[#091328]/60 backdrop-blur-xl shadow-2xl border-outline-variant/10'
-        }`}
+        className={`flex justify-between items-center px-6 md:px-8 py-3 mx-4 md:mx-auto max-w-6xl rounded-full transition-all duration-300 border ${scrolled
+          ? 'bg-[#091328]/80 backdrop-blur-xl shadow-2xl border-outline-variant/20'
+          : 'bg-[#091328]/60 backdrop-blur-xl shadow-2xl border-outline-variant/10'
+          }`}
         role="navigation"
         aria-label="Main navigation"
       >
@@ -109,7 +117,8 @@ export default function Navbar() {
           aria-label="Go to homepage"
           onClick={(e) => isHomePage && handleNavClick(e, 'home')}
         >
-          <svg className="w-auto h-10 md:h-12 drop-shadow-md" viewBox="0 0 432 281" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          {/* Desktop/Laptop height is controlled by md:h-9 or lg:h-10 (adjust these values to change size) */}
+          <svg className="w-auto h-8 md:h-10 lg:h-10 drop-shadow-md" viewBox="0 0 432 281" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g transform="translate(0, 281) scale(0.1, -0.1)" fill="#5d007cff">
               <path d="M663 2403c3-10 8-31 12-48 12-53 65-124 122-162 87-58 124-63 424-63 240 0 274-2 333-20 103-32 193-110 243-210 26-50 28-65 28-165 0-99-3-115-27-165-46-92-134-175-219-205-52-18-98-23-275-30-158-6-238-23-328-70-86-45-139-88-184-150-20-27-39-52-42-55-18-16-71-166-80-225-5-38-10-177-10-307v-238h150h149l-1 198c-1 211 11 321 44 385 30 60 87 116 152 150 56 29 69 31 156 31 86 0 102-4 165-33 129-61 168-91 378-285 54-50 117-108 140-129 197-182 443-309 650-337 296-39 575 36 781 210 102 86 257 262 243 276-5 6-6 4-59-61-18-23-52-58-75-78-48-43-201-137-223-137-9 0-24-6-35-14-40-27-176-50-300-50-169 0-254 21-410 101-63 33-162 97-175 112-3 4-18 17-35 30-31 23-170 150-259 234-81 78-207 190-254 226l-44 34 30 13c42 17 152 128 197 198 66 103 97 204 102 336 8 182-31 313-134 451-77 101-170 169-323 233-72 29-179 36-595 36-392 0-416-1-412-17z" />
               <path d="M1230 956c-83-23-122-62-161-158-25-61-42-287-20-274 6 4 11 17 11 30 0 46 33 117 76 165 58 65 111 85 201 79 100-7 176-49 394-214 170-128 319-213 472-268 103-37 175-55 143-35-10 6-44 22-75 34-69 27-182 100-276 178-57 48-236 210-279 253-6 6-48 40-94 77-90 73-185 122-264 137-61 12-70 12-128-4z" />
@@ -127,11 +136,10 @@ export default function Navbar() {
                 href={getNavHref(id)}
                 role="menuitem"
                 onClick={(e) => handleNavClick(e, id)}
-                className={`transition-colors hover:text-[#53ddfc] text-sm md:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded px-1 py-0.5 ${
-                  activeSection === id
-                    ? 'text-[#ba9eff] font-bold border-b-2 border-[#ba9eff] pb-1'
-                    : 'text-slate-400'
-                }`}
+                className={`transition-colors hover:text-[#53ddfc] text-sm md:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded px-1 py-0.5 ${activeSection === id
+                  ? 'text-[#ba9eff] font-bold border-b-2 border-[#ba9eff] pb-1'
+                  : 'text-slate-400'
+                  }`}
                 aria-current={activeSection === id ? 'true' : undefined}
               >
                 {label}
@@ -160,18 +168,15 @@ export default function Navbar() {
             className="lg:hidden flex flex-col justify-center items-center w-9 h-9 rounded-lg border border-outline-variant/20 bg-surface-container-high/50 gap-1.5 hover:border-primary/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <span
-              className={`block rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-[8px]' : ''}`}
-              style={{ width: '18px', height: '2px', background: 'rgb(148 163 184)', borderRadius: '9999px' }}
+              className={`block w-[18px] h-[2px] bg-slate-400 rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-[8px]' : ''}`}
               aria-hidden="true"
             />
             <span
-              className={`block rounded-full transition-all duration-300 ${menuOpen ? 'opacity-0 scale-0' : ''}`}
-              style={{ width: '18px', height: '2px', background: 'rgb(148 163 184)', borderRadius: '9999px' }}
+              className={`block w-[18px] h-[2px] bg-slate-400 rounded-full transition-all duration-300 ${menuOpen ? 'opacity-0 scale-0' : ''}`}
               aria-hidden="true"
             />
             <span
-              className={`block rounded-full transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}
-              style={{ width: '18px', height: '2px', background: 'rgb(148 163 184)', borderRadius: '9999px' }}
+              className={`block w-[18px] h-[2px] bg-slate-400 rounded-full transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}
               aria-hidden="true"
             />
           </button>
@@ -196,11 +201,10 @@ export default function Navbar() {
                   role="menuitem"
                   tabIndex={menuOpen ? 0 : -1}
                   onClick={(e) => handleNavClick(e, id)}
-                  className={`block px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                    activeSection === id
-                      ? 'bg-primary/10 text-primary border border-primary/20'
-                      : 'text-slate-400 hover:bg-surface-container-high/50 hover:text-slate-200'
-                  }`}
+                  className={`block px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${activeSection === id
+                    ? 'bg-primary/10 text-primary border border-primary/20'
+                    : 'text-slate-400 hover:bg-surface-container-high/50 hover:text-slate-200'
+                    }`}
                   aria-current={activeSection === id ? 'true' : undefined}
                 >
                   {label}

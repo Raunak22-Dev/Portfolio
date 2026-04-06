@@ -37,7 +37,7 @@ export default function Projects() {
           const ordered = ids
             .map(id => all.find(p => String(p._id) === String(id)))
             .filter(Boolean);
-          
+
           if (ordered.length === 0 && all.length > 0) {
             setFeatured(all.slice(0, 4));
           } else {
@@ -89,7 +89,7 @@ export default function Projects() {
               <Tilt glareEnable={true} glareMaxOpacity={0.1} glareColor="#ba9eff" scale={1.02} transitionSpeed={400} className="w-full h-full">
                 <div className={`relative h-[300px] md:h-full aspect-auto rounded-xl overflow-hidden bg-surface-variant shadow-xl border border-outline-variant/10 ${idx === 0 || idx === 3 ? 'md:aspect-video' : ''}`}>
                   <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 transform-gpu will-change-transform"
                     src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'}
                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }}
                     alt={project.title}

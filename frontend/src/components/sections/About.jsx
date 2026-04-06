@@ -2,7 +2,7 @@ export default function About() {
   return (
     <section id="about" className="pt-24 pb-12 px-6 md:px-12 max-w-7xl mx-auto relative">
       {/* Ambient Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0 transform-gpu"></div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center h-full relative z-10">
 
@@ -35,24 +35,7 @@ export default function About() {
             </div>
           </div>
 
-          {/* Aesthetic Stats Bar */}
-          <div className="flex items-center gap-8 md:gap-12 pt-6 border-t border-outline-variant/20 w-full max-w-xl">
-            <div className="group cursor-default">
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl md:text-5xl font-black text-on-surface group-hover:text-primary transition-colors duration-300">10M</span>
-                <span className="text-2xl font-bold text-primary">+</span>
-              </div>
-              <p className="text-[10px] md:text-xs font-label uppercase tracking-widest text-on-surface-variant mt-1 group-hover:text-primary/70 transition-colors">Rows Processed</p>
-            </div>
-            <div className="w-[1px] h-12 bg-outline-variant/20"></div>
-            <div className="group cursor-default">
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl md:text-5xl font-black text-on-surface group-hover:text-secondary transition-colors duration-300">50</span>
-                <span className="text-2xl font-bold text-secondary">+</span>
-              </div>
-              <p className="text-[10px] md:text-xs font-label uppercase tracking-widest text-on-surface-variant mt-1 group-hover:text-secondary/70 transition-colors">Dashboards Built</p>
-            </div>
-          </div>
+
         </div>
 
         {/* Right Column: Premium High-Fidelity Bento Grid */}
@@ -61,7 +44,7 @@ export default function About() {
           {/* Top Big Card: Visual Code Editor Showcase */}
           <div className="col-span-2 aspect-[16/9] lg:aspect-[4/3] rounded-[2rem] overflow-hidden bg-surface-container-lowest border border-outline-variant/30 relative flex items-center justify-center hover:border-primary/40 transition-all duration-500 shadow-2xl">
             <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_24px]"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/20 blur-[60px] rounded-full group-hover:scale-150 group-hover:bg-secondary/20 transition-all duration-700"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/20 blur-[60px] rounded-full group-hover:scale-150 group-hover:bg-secondary/20 transition-all duration-700 transform-gpu"></div>
 
             <div className="relative z-10 w-full max-w-sm px-6">
               {/* Fake Code Editor Block */}
@@ -120,7 +103,7 @@ export default function About() {
 
           {/* Bottom Right: Actionable Insights / Business Impact */}
           <div className="aspect-square rounded-[2rem] bg-gradient-to-br from-surface-container-high to-surface-container-lowest border border-outline-variant/20 p-5 lg:p-6 flex flex-col justify-between relative hover:border-primary/40 transition-all hover:-translate-y-1 cursor-default overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] rounded-full pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] rounded-full pointer-events-none transform-gpu"></div>
 
             <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-lg w-fit shadow-[0_0_15px_rgba(186,158,255,0.15)] relative z-10">
               <span className="material-symbols-outlined text-[14px] text-primary">trending_up</span>
