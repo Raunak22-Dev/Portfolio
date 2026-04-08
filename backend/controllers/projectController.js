@@ -1,19 +1,8 @@
 const Project = require('../models/Project');
+const { sanitizeBody, isValidObjectId } = require('../utils/validation');
 
 // Whitelist of allowed fields to prevent mass assignment attacks
 const ALLOWED_FIELDS = ['title', 'type', 'tech', 'link', 'github', 'image', 'shortDescription', 'longDescription', 'features'];
-
-const sanitizeBody = (body) => {
-  const clean = {};
-  for (const key of ALLOWED_FIELDS) {
-    if (body[key] !== undefined) {
-      clean[key] = body[key];
-    }
-  }
-  return clean;
-};
-
-const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
 const getProjects = async (req, res) => {
   try {
@@ -39,7 +28,7 @@ const getProjectById = async (req, res) => {
 
 const createProject = async (req, res) => {
   try {
-    const data = sanitizeBody(req.body);
+    const data = sanitizeBody(req.body, ALLOWED_FIELDS);
     if (!data.title || !data.type) {
       return res.status(400).json({ message: 'Title and type are required.' });
     }
@@ -56,7 +45,7 @@ const updateProject = async (req, res) => {
     if (!isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: 'Invalid project ID format.' });
     }
-    const data = sanitizeBody(req.body);
+    const data = sanitizeBody(req.body, ALLOWED_FIELDS);
     const updated = await Project.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ message: 'Project not found' });
     res.json(updated);

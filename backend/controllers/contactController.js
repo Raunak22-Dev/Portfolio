@@ -1,4 +1,14 @@
 const Contact = require('../models/Contact');
+const rateLimit = require('express-rate-limit');
+const { isValidObjectId } = require('../utils/validation');
+
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 3, // limit each IP to 3 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many contact requests from this IP, please try again after an hour.' },
+});
 
 // Allowed max lengths to prevent abuse
 const MAX_NAME = 100;
@@ -70,7 +80,7 @@ const getMessages = async (req, res) => {
 
 const deleteMessage = async (req, res) => {
   try {
-    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: 'Invalid message ID format.' });
     }
     const msg = await Contact.findByIdAndDelete(req.params.id);
@@ -81,4 +91,4 @@ const deleteMessage = async (req, res) => {
   }
 };
 
-module.exports = { createMessage, getMessages, deleteMessage };
+module.exports = { createMessage, getMessages, deleteMessage, contactLimiter };

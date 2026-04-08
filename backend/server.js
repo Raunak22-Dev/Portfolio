@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 
 // Import Route modules
@@ -49,8 +48,7 @@ app.use(cors({
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
-// NoSQL Injection Sanitization — strips $ and . from req.body/query/params
-app.use(mongoSanitize());
+// NoSQL Injection Sanitization — disabled due to Express getter bug
 
 // Global rate limiter: 100 requests per 15 minutes per IP
 const globalLimiter = rateLimit({

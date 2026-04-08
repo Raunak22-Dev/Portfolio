@@ -1,18 +1,7 @@
 const Certification = require('../models/Certification');
+const { sanitizeBody, isValidObjectId } = require('../utils/validation');
 
 const ALLOWED_FIELDS = ['title', 'issuer', 'date', 'credentialId', 'link', 'image', 'skills'];
-
-const sanitizeBody = (body) => {
-  const clean = {};
-  for (const key of ALLOWED_FIELDS) {
-    if (body[key] !== undefined) {
-      clean[key] = body[key];
-    }
-  }
-  return clean;
-};
-
-const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
 const getCertifications = async (req, res) => {
   try {
@@ -25,7 +14,7 @@ const getCertifications = async (req, res) => {
 
 const createCertification = async (req, res) => {
   try {
-    const data = sanitizeBody(req.body);
+    const data = sanitizeBody(req.body, ALLOWED_FIELDS);
     if (!data.title || !data.issuer) {
       return res.status(400).json({ message: 'Title and issuer are required.' });
     }
@@ -42,7 +31,7 @@ const updateCertification = async (req, res) => {
     if (!isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: 'Invalid certification ID format.' });
     }
-    const data = sanitizeBody(req.body);
+    const data = sanitizeBody(req.body, ALLOWED_FIELDS);
     const updated = await Certification.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ message: 'Certification not found' });
     res.json(updated);

@@ -41,7 +41,7 @@ function ImageUpload({ value, onChange, label = "Cover Image" }) {
           className="cursor-pointer w-24 h-24 rounded-xl border-2 border-dashed border-white/20 hover:border-[#00fbfb]/60 flex flex-col items-center justify-center gap-1 transition-all duration-300 shrink-0 overflow-hidden bg-[#131b2e]/30 backdrop-blur relative group"
         >
           {value ? (
-            <img src={value} onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }} alt="Preview" className="w-full h-full object-cover" />
+            <img src={value} loading="lazy" decoding="async" onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }} alt="Preview" className="w-full h-full object-cover" />
           ) : (
             <>
               <span className="material-symbols-outlined text-[24px] text-white/50 group-hover:text-[#00fbfb] transition-colors">upload</span>
@@ -70,10 +70,10 @@ function Toast({ message, type, onClose }) {
   useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, [onClose]);
   const cls = type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
     : type === 'error' ? 'bg-red-500/10 border-red-500/30 text-red-400'
-    : 'bg-primary/10 border-primary/30 text-primary';
+      : 'bg-primary/10 border-primary/30 text-primary';
   const icon = type === 'success' ? 'task_alt' : type === 'error' ? 'error' : 'info';
   return (
-    <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-2xl border backdrop-blur-xl shadow-2xl animate-fade-in ${cls}`}>
+    <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-2xl border backdrop-blur-xl shadow-2xl animate-fade-in transform-gpu will-change-transform ${cls}`}>
       <span className="material-symbols-outlined text-[20px]">{icon}</span>
       <span className="font-bold text-sm">{message}</span>
       <button onClick={onClose} className="ml-2 opacity-60 hover:opacity-100 transition-opacity">
@@ -86,7 +86,7 @@ function Toast({ message, type, onClose }) {
 function SidebarItem({ icon, label, active, onClick, badge }) {
   return (
     <button onClick={onClick} className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 group relative ${active ? 'bg-[#00fbfb]/10 text-[#00fbfb] shadow-[0_0_20px_rgba(0,251,251,0.15)] border border-[#00fbfb]/20' : 'text-white/60 hover:bg-white/5 hover:text-white border border-transparent'}`}>
-      <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">{icon}</span>
+      <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform transform-gpu will-change-transform">{icon}</span>
       <span className="flex-1 text-left">{label}</span>
       {badge > 0 && <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${active ? 'bg-[#00fbfb]/20 text-[#00fbfb]' : 'bg-white/10 text-white/60'}`}>{badge}</span>}
     </button>
@@ -96,9 +96,9 @@ function SidebarItem({ icon, label, active, onClick, badge }) {
 // Stat Card  
 function StatCard({ icon, label, value, colorClass }) {
   return (
-    <div className={`relative overflow-hidden bg-[#131b2e]/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-3xl p-6 hover:border-[#00fbfb]/30 transition-all duration-500 group transform hover:-translate-y-1`}>
+    <div className={`relative overflow-hidden bg-[#131b2e]/40 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-3xl p-6 hover:border-[#00fbfb]/30 transition-all duration-500 group transform hover:-translate-y-1 transform-gpu will-change-transform`}>
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-[#00fbfb]/10 transition-colors duration-500"></div>
-      <div className={`w-14 h-14 rounded-2xl ${colorClass}/10 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-inner bg-gradient-to-br from-white/5 to-transparent`}>
+      <div className={`w-14 h-14 rounded-2xl ${colorClass}/10 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform transform-gpu will-change-transform duration-500 shadow-inner bg-gradient-to-br from-white/5 to-transparent`}>
         <span className={`material-symbols-outlined ${colorClass} text-[26px]`}>{icon}</span>
       </div>
       <p className="text-xs font-black uppercase tracking-[0.2em] text-white/50 mb-2">{label}</p>
@@ -153,10 +153,10 @@ export default function AdminDashboard() {
   const showToast = (message, type = 'success') => setToast({ message, type });
   const authHeader = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
-  const handleLogout = () => { 
-    localStorage.removeItem('master_admin_token'); 
-    localStorage.removeItem('master_admin_expires'); 
-    navigate('/admin'); 
+  const handleLogout = () => {
+    localStorage.removeItem('master_admin_token');
+    localStorage.removeItem('master_admin_expires');
+    navigate('/admin');
   };
 
   // ── Fetch All Data ────────────────────────────────────────────────────────
@@ -226,18 +226,20 @@ export default function AdminDashboard() {
   };
 
   const confirmDeleteProject = (id, title) => {
-    setConfirmDlg({ message: `Delete "${title}"? This cannot be undone.`, onConfirm: async () => {
-      setConfirmDlg(null);
-      try {
-        const res = await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) throw new Error();
-        // Also remove from featured if present
-        const newFeat = featuredIds.filter(fid => fid !== id);
-        if (newFeat.length !== featuredIds.length) await saveFeatured(newFeat);
-        showToast('Project deleted.', 'success');
-        fetchData(false);
-      } catch { showToast('Delete failed.', 'error'); }
-    }});
+    setConfirmDlg({
+      message: `Delete "${title}"? This cannot be undone.`, onConfirm: async () => {
+        setConfirmDlg(null);
+        try {
+          const res = await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          // Also remove from featured if present
+          const newFeat = featuredIds.filter(fid => fid !== id);
+          if (newFeat.length !== featuredIds.length) await saveFeatured(newFeat);
+          showToast('Project deleted.', 'success');
+          fetchData(false);
+        } catch { showToast('Delete failed.', 'error'); }
+      }
+    });
   };
 
   // ── Certification Handlers ─────────────────────────────────────────────────
@@ -269,28 +271,32 @@ export default function AdminDashboard() {
   };
 
   const confirmDeleteCert = (id, title) => {
-    setConfirmDlg({ message: `Delete "${title}"? This cannot be undone.`, onConfirm: async () => {
-      setConfirmDlg(null);
-      try {
-        const res = await fetch(`${API_URL}/certifications/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) throw new Error();
-        showToast('Certification deleted.', 'success');
-        fetchData(false);
-      } catch { showToast('Delete failed.', 'error'); }
-    }});
+    setConfirmDlg({
+      message: `Delete "${title}"? This cannot be undone.`, onConfirm: async () => {
+        setConfirmDlg(null);
+        try {
+          const res = await fetch(`${API_URL}/certifications/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          showToast('Certification deleted.', 'success');
+          fetchData(false);
+        } catch { showToast('Delete failed.', 'error'); }
+      }
+    });
   };
 
   // ── Message Handlers ───────────────────────────────────────────────────────
   const confirmDeleteMessage = (id) => {
-    setConfirmDlg({ message: 'Delete this message permanently?', onConfirm: async () => {
-      setConfirmDlg(null);
-      try {
-        const res = await fetch(`${API_URL}/contact/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) throw new Error();
-        showToast('Message deleted.', 'success');
-        fetchData(false);
-      } catch { showToast('Delete failed.', 'error'); }
-    }});
+    setConfirmDlg({
+      message: 'Delete this message permanently?', onConfirm: async () => {
+        setConfirmDlg(null);
+        try {
+          const res = await fetch(`${API_URL}/contact/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          showToast('Message deleted.', 'success');
+          fetchData(false);
+        } catch { showToast('Delete failed.', 'error'); }
+      }
+    });
   };
 
   // ── Featured Projects Handlers ─────────────────────────────────────────────
@@ -330,7 +336,7 @@ export default function AdminDashboard() {
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-[#00fbfb]/10 blur-[150px] rounded-full mix-blend-screen animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ddb7ff]/10 blur-[150px] rounded-full mix-blend-screen animate-pulse" style={{animationDelay: '2s'}} />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ddb7ff]/10 blur-[150px] rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Header */}
@@ -342,7 +348,6 @@ export default function AdminDashboard() {
             </div>
             <div>
               <span className="font-headline font-black text-white text-lg tracking-tight">Mission Control</span>
-              <span className="hidden md:inline text-xs font-bold uppercase tracking-[0.2em] text-[#00fbfb]/70 ml-4 border-l border-white/10 pl-4">Premium CMS</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -360,9 +365,6 @@ export default function AdminDashboard() {
       <div className="pt-20 flex min-h-screen">
         {/* Sidebar */}
         <aside className="fixed left-0 top-20 bottom-0 w-[260px] bg-[#131b2e]/40 backdrop-blur-3xl border-r border-white/5 hidden lg:flex flex-col p-6 z-30">
-          <div className="mb-8 px-2">
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#00fbfb]/50">Command Module</p>
-          </div>
           <nav className="flex flex-col gap-1.5 flex-1">
             <SidebarItem icon="dashboard" label="Overview" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
             <SidebarItem icon="rocket_launch" label={editingProject ? 'Editing Project' : 'Add Project'} active={activeTab === 'projects'} onClick={() => { setEditingProject(null); setProjectForm(emptyProject); setActiveTab('projects'); }} />
@@ -374,7 +376,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-4 px-2 py-3 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00fbfb] to-[#ddb7ff] p-[2px]">
                 <div className="w-full h-full bg-[#0b1325] rounded-full flex items-center justify-center">
-                   <span className="material-symbols-outlined text-white text-[18px]">person</span>
+                  <span className="material-symbols-outlined text-white text-[18px]">person</span>
                 </div>
               </div>
               <div>
@@ -390,10 +392,9 @@ export default function AdminDashboard() {
 
           {/* ── OVERVIEW ── */}
           {activeTab === 'overview' && (
-            <div className="animate-fade-in">
+            <div className="animate-fade-in transform-gpu will-change-transform">
               <div className="mb-8">
                 <h1 className="font-headline text-3xl md:text-4xl font-black text-on-surface mb-1">Dashboard Overview</h1>
-                <p className="text-on-surface-variant text-sm">Real-time insight into your portfolio content.</p>
               </div>
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -437,7 +438,7 @@ export default function AdminDashboard() {
                             <td className="py-5 px-8">
                               <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-white/5 overflow-hidden shrink-0 border border-white/10 group-hover:border-[#00fbfb]/50 group-hover:shadow-[0_0_15px_rgba(0,251,251,0.2)] transition-all">
-                                  <img src={project.image} onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                  <img src={project.image} loading="lazy" decoding="async" onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'; }} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform transform-gpu will-change-transform duration-500" />
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-2">
@@ -530,7 +531,7 @@ export default function AdminDashboard() {
 
           {/* ── ADD/EDIT PROJECT ── */}
           {activeTab === 'projects' && (
-            <div className="animate-fade-in flex justify-center">
+            <div className="animate-fade-in transform-gpu will-change-transform flex justify-center">
               <div className="w-full max-w-4xl">
                 <div className="mb-8">
                   {editingProject && (
@@ -552,34 +553,34 @@ export default function AdminDashboard() {
                   <form onSubmit={handleProjectSubmit} className="space-y-6 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <Field label="Project Title *">
-                        <input className={inputCls} type="text" placeholder="e.g. Analytics Dashboard" value={projectForm.title} onChange={e => setProjectForm({...projectForm, title: e.target.value})} required />
+                        <input className={inputCls} type="text" placeholder="e.g. Analytics Dashboard" value={projectForm.title} onChange={e => setProjectForm({ ...projectForm, title: e.target.value })} required />
                       </Field>
                       <Field label="Project Type *">
-                        <input className={inputCls} type="text" placeholder="e.g. Full-Stack App" value={projectForm.type} onChange={e => setProjectForm({...projectForm, type: e.target.value})} required />
+                        <input className={inputCls} type="text" placeholder="e.g. Full-Stack App" value={projectForm.type} onChange={e => setProjectForm({ ...projectForm, type: e.target.value })} required />
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <Field label="GitHub Repository URL">
-                        <input className={inputCls} type="url" placeholder="https://github.com/..." value={projectForm.github} onChange={e => setProjectForm({...projectForm, github: e.target.value})} />
+                        <input className={inputCls} type="url" placeholder="https://github.com/..." value={projectForm.github} onChange={e => setProjectForm({ ...projectForm, github: e.target.value })} />
                       </Field>
                       <Field label="Live Demo URL">
-                        <input className={inputCls} type="url" placeholder="https://..." value={projectForm.link} onChange={e => setProjectForm({...projectForm, link: e.target.value})} />
+                        <input className={inputCls} type="url" placeholder="https://..." value={projectForm.link} onChange={e => setProjectForm({ ...projectForm, link: e.target.value })} />
                       </Field>
                     </div>
-                    <ImageUpload label="Cover Image" value={projectForm.image} onChange={v => setProjectForm({...projectForm, image: v})} />
+                    <ImageUpload label="Cover Image" value={projectForm.image} onChange={v => setProjectForm({ ...projectForm, image: v })} />
                     <Field label="Tech Stack * (comma-separated)">
-                      <input className={inputCls} type="text" placeholder="React, Node.js, MongoDB..." value={projectForm.tech} onChange={e => setProjectForm({...projectForm, tech: e.target.value})} required />
+                      <input className={inputCls} type="text" placeholder="React, Node.js, MongoDB..." value={projectForm.tech} onChange={e => setProjectForm({ ...projectForm, tech: e.target.value })} required />
                     </Field>
                     <Field label="Key Features * (comma-separated)">
-                      <input className={inputCls} type="text" placeholder="JWT Auth, WebSocket Chat..." value={projectForm.features} onChange={e => setProjectForm({...projectForm, features: e.target.value})} required />
+                      <input className={inputCls} type="text" placeholder="JWT Auth, WebSocket Chat..." value={projectForm.features} onChange={e => setProjectForm({ ...projectForm, features: e.target.value })} required />
                     </Field>
                     <Field label="Short Description *">
-                      <textarea className={textareaCls} rows={2} placeholder="Brief teaser for project cards..." value={projectForm.shortDescription} onChange={e => setProjectForm({...projectForm, shortDescription: e.target.value})} required />
+                      <textarea className={textareaCls} rows={2} placeholder="Brief teaser for project cards..." value={projectForm.shortDescription} onChange={e => setProjectForm({ ...projectForm, shortDescription: e.target.value })} required />
                     </Field>
                     <Field label="Long Description *">
-                      <textarea className={textareaCls} rows={4} placeholder="Deep dive into the architecture and decisions..." value={projectForm.longDescription} onChange={e => setProjectForm({...projectForm, longDescription: e.target.value})} required />
+                      <textarea className={textareaCls} rows={4} placeholder="Deep dive into the architecture and decisions..." value={projectForm.longDescription} onChange={e => setProjectForm({ ...projectForm, longDescription: e.target.value })} required />
                     </Field>
-                    <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-[#00fbfb] to-[#00a8a8] hover:to-[#00fbfb] text-[#0b1325] py-4 font-black uppercase tracking-[0.15em] text-sm rounded-xl hover:shadow-[0_0_20px_rgba(0,251,251,0.5)] hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2">
+                    <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-[#00fbfb] to-[#00a8a8] hover:to-[#00fbfb] text-[#0b1325] py-4 font-black uppercase tracking-[0.15em] text-sm rounded-xl hover:shadow-[0_0_20px_rgba(0,251,251,0.5)] hover:-translate-y-0.5 transform-gpu will-change-transform transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2">
                       {submitting ? (<><div className="w-4 h-4 border-2 border-[#0b1325]/30 border-t-[#0b1325] rounded-full animate-spin" />Deploying...</>) : (<><span className="material-symbols-outlined text-[18px]">{editingProject ? 'save' : 'rocket_launch'}</span>{editingProject ? 'Save Changes' : 'Deploy to Database'}</>)}
                     </button>
                   </form>
@@ -590,7 +591,7 @@ export default function AdminDashboard() {
 
           {/* ── ADD/EDIT CERTIFICATION ── */}
           {activeTab === 'certifications' && (
-            <div className="animate-fade-in flex justify-center">
+            <div className="animate-fade-in transform-gpu will-change-transform flex justify-center">
               <div className="w-full max-w-4xl">
                 <div className="mb-8">
                   {editingCert && (
@@ -612,28 +613,28 @@ export default function AdminDashboard() {
                   <form onSubmit={handleCertSubmit} className="space-y-6 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <Field label="Certification Title *">
-                        <input className={inputCls} type="text" placeholder="AWS Certified Solutions Architect" value={certForm.title} onChange={e => setCertForm({...certForm, title: e.target.value})} required />
+                        <input className={inputCls} type="text" placeholder="AWS Certified Solutions Architect" value={certForm.title} onChange={e => setCertForm({ ...certForm, title: e.target.value })} required />
                       </Field>
                       <Field label="Issuing Authority *">
-                        <input className={inputCls} type="text" placeholder="Amazon Web Services" value={certForm.issuer} onChange={e => setCertForm({...certForm, issuer: e.target.value})} required />
+                        <input className={inputCls} type="text" placeholder="Amazon Web Services" value={certForm.issuer} onChange={e => setCertForm({ ...certForm, issuer: e.target.value })} required />
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <Field label="Issue / Validity Date">
-                        <input className={inputCls} type="text" placeholder="e.g. Valid through 2026" value={certForm.date} onChange={e => setCertForm({...certForm, date: e.target.value})} />
+                        <input className={inputCls} type="text" placeholder="e.g. Valid through 2026" value={certForm.date} onChange={e => setCertForm({ ...certForm, date: e.target.value })} />
                       </Field>
                       <Field label="Credential ID (optional)">
-                        <input className={inputCls} type="text" placeholder="License or credential number" value={certForm.credentialId} onChange={e => setCertForm({...certForm, credentialId: e.target.value})} />
+                        <input className={inputCls} type="text" placeholder="License or credential number" value={certForm.credentialId} onChange={e => setCertForm({ ...certForm, credentialId: e.target.value })} />
                       </Field>
                     </div>
                     <Field label="Verification URL">
-                      <input className={inputCls} type="text" placeholder="https://verify.credential.net/..." value={certForm.link} onChange={e => setCertForm({...certForm, link: e.target.value})} />
+                      <input className={inputCls} type="text" placeholder="https://verify.credential.net/..." value={certForm.link} onChange={e => setCertForm({ ...certForm, link: e.target.value })} />
                     </Field>
-                    <ImageUpload label="Cover Image" value={certForm.image} onChange={v => setCertForm({...certForm, image: v})} />
+                    <ImageUpload label="Cover Image" value={certForm.image} onChange={v => setCertForm({ ...certForm, image: v })} />
                     <Field label="Acquired Skills (comma-separated)">
-                      <input className={inputCls} type="text" placeholder="Cloud Computing, Security, Kubernetes..." value={certForm.skills} onChange={e => setCertForm({...certForm, skills: e.target.value})} />
+                      <input className={inputCls} type="text" placeholder="Cloud Computing, Security, Kubernetes..." value={certForm.skills} onChange={e => setCertForm({ ...certForm, skills: e.target.value })} />
                     </Field>
-                    <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-[#ddb7ff] to-[#bd81ff] hover:to-[#ddb7ff] text-[#0b1325] py-4 font-black uppercase tracking-[0.15em] text-sm rounded-xl hover:shadow-[0_0_20px_rgba(221,183,255,0.5)] hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-4">
+                    <button type="submit" disabled={submitting} className="w-full bg-gradient-to-r from-[#ddb7ff] to-[#bd81ff] hover:to-[#ddb7ff] text-[#0b1325] py-4 font-black uppercase tracking-[0.15em] text-sm rounded-xl hover:shadow-[0_0_20px_rgba(221,183,255,0.5)] hover:-translate-y-0.5 transform-gpu will-change-transform transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-4">
                       {submitting ? (<><div className="w-4 h-4 border-2 border-[#0b1325]/30 border-t-[#0b1325] rounded-full animate-spin" />Saving...</>) : (<><span className="material-symbols-outlined text-[18px]">{editingCert ? 'save' : 'workspace_premium'}</span>{editingCert ? 'Save Changes' : 'Save Certification'}</>)}
                     </button>
                   </form>
@@ -644,7 +645,7 @@ export default function AdminDashboard() {
 
           {/* ── FEATURED PROJECTS ── */}
           {activeTab === 'featured' && (
-            <div className="animate-fade-in flex flex-col items-center">
+            <div className="animate-fade-in transform-gpu will-change-transform flex flex-col items-center">
               <div className="w-full max-w-4xl">
                 <div className="mb-8">
                   <h1 className="font-headline text-3xl md:text-4xl font-black text-white mb-1">Featured Projects</h1>
@@ -731,7 +732,7 @@ export default function AdminDashboard() {
 
           {/* ── INBOX ── */}
           {activeTab === 'inbox' && (
-            <div className="animate-fade-in">
+            <div className="animate-fade-in transform-gpu will-change-transform">
               <div className="mb-8 flex items-center justify-between">
                 <div>
                   <h1 className="font-headline text-3xl md:text-4xl font-black text-on-surface mb-1">Inbox</h1>

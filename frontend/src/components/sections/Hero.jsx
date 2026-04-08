@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import profilePic from "../../../public/Crop version.jpeg";
+const profilePic = "/Crop version.jpeg";
 
 /* --- Magnetic Button --- */
 function MagneticButton({ children, className, href, to }) {
@@ -107,7 +107,7 @@ export default function Hero() {
 
         {/* Right: Image */}
         <div className="order-1 lg:order-2 lg:col-span-5 flex flex-col justify-center lg:justify-end items-center mb-6 lg:mb-0 gap-10 lg:gap-0">
-          
+
           {/* Mobile Badge (Shown Above Image) */}
           <div className="lg:hidden inline-flex items-center px-4 py-1.5 rounded-full border border-outline-variant/20 bg-surface-container-low/50 backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-secondary mr-3 animate-pulse shadow-[0_0_8px_rgba(83,221,252,0.8)]"></span>
