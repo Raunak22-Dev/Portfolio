@@ -1,9 +1,82 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+// Absolute module-level lock to destroy lingering React StrictMode ghost closures.
+let globalRenderId = 0;
+
 export default function ResumeViewer() {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    const renderId = ++globalRenderId; // Issue a globally unique ID for this mount execution
+
+    const renderPdf = async () => {
+      setLoading(true);
+      try {
+        const loadingTask = window.pdfjsLib.getDocument("/Raunak_Resume.pdf");
+        const pdf = await loadingTask.promise;
+
+        if (renderId !== globalRenderId) return; // Abort if a newer component mounted
+
+        const viewer = document.getElementById("pdf-viewer-container");
+        if (!viewer) return;
+        viewer.innerHTML = ""; // Atomic clear
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          if (renderId !== globalRenderId) return; // Abort execution if unmounted during loop
+
+          const page = await pdf.getPage(pageNum);
+          if (renderId !== globalRenderId) return;
+
+          const viewport = page.getViewport({ scale: 2.0 });
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          canvas.className = "w-full h-auto object-contain mx-auto shadow-2xl bg-white border border-outline-variant/20 rounded-md xl:rounded-xl";
+
+          await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+          }).promise;
+
+          if (renderId !== globalRenderId) return;
+          viewer.appendChild(canvas);
+        }
+      } catch (err) {
+        if (err?.name !== 'RenderingCancelledException' && err?.name !== 'AbortException') {
+          console.error("Failed to render native PDF:", err);
+        }
+      } finally {
+        if (renderId === globalRenderId) setLoading(false);
+      }
+    };
+
+    let checkInterval;
+    if (!window.pdfjsLib) {
+      if (!document.getElementById("pdfjs-cdn-script")) {
+        const script = document.createElement("script");
+        script.id = "pdfjs-cdn-script";
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+        script.async = true;
+        document.head.appendChild(script);
+      }
+
+      checkInterval = setInterval(() => {
+        if (window.pdfjsLib && renderId === globalRenderId) {
+          clearInterval(checkInterval);
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+          renderPdf();
+        }
+      }, 50);
+    } else {
+      renderPdf();
+    }
+
+    return () => {
+      if (checkInterval) clearInterval(checkInterval);
+    };
   }, []);
 
   return (
@@ -34,17 +107,20 @@ export default function ResumeViewer() {
           </a>
         </div>
 
-        {/* Resume PDF Viewer */}
-        <div
-          className="w-full max-w-5xl mx-auto bg-surface-container rounded-2xl md:rounded-[2rem] shadow-2xl border border-outline-variant/20 overflow-hidden relative z-10"
-          style={{ height: 'calc(100vh - 250px)', minHeight: '600px' }}
-        >
-          <iframe
-            src="/Raunak_Resume.pdf#toolbar=0&navpanes=0&scrollbar=0&view=Fit"
-            className="w-full h-full border-none overflow-hidden"
-            scrolling="no"
-            title="Raunak Gangwal Resume"
-          />
+        {/* Custom Native Canvas PDF Renderer */}
+        <div className="w-full flex flex-col items-center justify-center relative min-h-[500px]">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none fade-out">
+              <div className="animate-pulse flex flex-col items-center gap-4">
+                <span className="material-symbols-outlined text-4xl text-primary animate-spin">autorenew</span>
+                <p className="text-secondary font-bold font-label tracking-widest uppercase">Rendering Pages...</p>
+              </div>
+            </div>
+          )}
+
+          <div id="pdf-viewer-container" className="w-full flex flex-col items-center gap-8 relative z-10 transition-opacity duration-1000">
+            {/* Canvas elements injected here via PDF.js */}
+          </div>
         </div>
       </div>
     </main>

@@ -43,12 +43,12 @@ export default function AdminLogin() {
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 relative z-10 flex items-center justify-center">
       {/* Immersive Dark Mode Canvas Background */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-        <div className="absolute top-[20%] right-[-10%] w-[40%] h-[50%] bg-primary/20 blur-[150px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[40%] bg-secondary/20 blur-[120px] rounded-full"></div>
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none transform-gpu">
+        <div className="absolute top-[20%] right-[-10%] w-[40%] h-[50%] bg-primary/20 blur-[150px] rounded-full will-change-transform"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[40%] bg-secondary/20 blur-[120px] rounded-full will-change-transform"></div>
       </div>
 
-      <div className="w-full max-w-lg bg-surface-container-low/40 backdrop-blur-2xl border border-outline-variant/30 rounded-[2rem] p-10 md:p-14 shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative z-10">
+      <div className="w-full max-w-lg bg-surface-container-low/40 backdrop-blur-2xl border border-outline-variant/30 rounded-[2rem] p-10 md:p-14 shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative z-10 animate-fade-in transform-gpu">
         <div className="text-center mb-10">
           <span className="material-symbols-outlined text-5xl text-primary mb-4 block">admin_panel_settings</span>
           <h1 className="text-3xl font-black font-headline text-on-surface tracking-tight">System Override</h1>
@@ -61,24 +61,40 @@ export default function AdminLogin() {
               type="password" 
               id="password" 
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (status === 'error') setStatus('idle'); // Clear error state on subsequent typing
+              }}
+              autoComplete="current-password"
               placeholder=" " 
-              className="peer w-full bg-background/50 border border-outline-variant/30 text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/60 transition-all font-body text-center text-xl tracking-[0.5em] shadow-inner" 
+              className={`peer w-full bg-background/50 border ${status === 'error' ? 'border-red-500/50 focus:border-red-500/80 focus:ring-red-500/50' : 'border-outline-variant/30 focus:border-primary/60 focus:ring-primary/60'} text-on-surface px-5 py-4 rounded-xl focus:outline-none focus:ring-1 transition-all font-body text-center text-xl tracking-[0.5em] shadow-inner`} 
               required
             />
-            <label htmlFor="password" className="absolute text-on-surface-variant text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1/2 -translate-x-1/2 font-bold rounded">Authentication Key</label>
+            <label 
+              htmlFor="password" 
+              className={`absolute ${status === 'error' ? 'text-red-400' : 'text-on-surface-variant'} text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container px-2 peer-focus:px-2 peer-focus:${status === 'error' ? 'text-red-400' : 'text-primary'} peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1/2 -translate-x-1/2 font-bold rounded transform-gpu will-change-transform`}
+            >
+              Authentication Key
+            </label>
           </div>
 
           <button 
             type="submit" 
             disabled={status === 'loading'}
-            className="w-full bg-gradient-to-r from-primary via-[#ba9eff] to-secondary text-[#091328] font-black tracking-widest uppercase py-4 rounded-xl hover:shadow-[0_0_30px_rgba(186,158,255,0.4)] transition-all duration-300 disabled:opacity-50"
+            className="w-full bg-gradient-to-r flex items-center justify-center gap-3 from-primary via-[#ba9eff] to-secondary text-[#091328] font-black tracking-widest uppercase py-4 rounded-xl hover:shadow-[0_0_30px_rgba(186,158,255,0.4)] transition-all duration-300 transform-gpu will-change-transform disabled:opacity-50"
           >
-            {status === 'loading' ? 'Deciphering...' : 'Breach Mainframe'}
+            {status === 'loading' ? (
+              <>
+                <div className="w-5 h-5 border-2 border-[#091328]/30 border-t-[#091328] rounded-full animate-spin transform-gpu" />
+                Deciphering...
+              </>
+            ) : (
+              'Breach Mainframe'
+            )}
           </button>
 
           {status === 'error' && (
-            <p className="text-red-400 text-xs font-bold text-center uppercase tracking-widest animate-pulse mt-4">
+            <p className="text-red-400 text-xs font-bold text-center uppercase tracking-widest animate-pulse transform-gpu will-change-transform mt-4">
                Access Denied: Invalid Cryptographic Key
             </p>
           )}
